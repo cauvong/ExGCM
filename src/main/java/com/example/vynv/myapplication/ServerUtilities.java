@@ -48,7 +48,7 @@ public final class ServerUtilities {
         // As the server might be down, we will retry it a couple
         // times.
         for (int i = 1; i <= MAX_ATTEMPTS; i++) {
-            Log.d(TAG, "Attempt #" + i + " to register");
+            Log.d("xxxS", "Attempt #" + i + " to register");
             try {
                 displayMessage(context, context.getString(
                         R.string.server_registering, i, MAX_ATTEMPTS));
@@ -61,16 +61,16 @@ public final class ServerUtilities {
                 // Here we are simplifying and retrying on any error; in a real
                 // application, it should retry only on unrecoverable errors
                 // (like HTTP error code 503).
-                Log.e(TAG, "Failed to register on attempt " + i + ":" + e);
+                Log.e("xxxS2", "Failed to register on attempt " + i + ":" + e);
                 if (i == MAX_ATTEMPTS) {
                     break;
                 }
                 try {
-                    Log.d(TAG, "Sleeping for " + backoff + " ms before retry");
+                    Log.d("xx#", "Sleeping for " + backoff + " ms before retry");
                     Thread.sleep(backoff);
                 } catch (InterruptedException e1) {
                     // Activity finished before we complete - exit.
-                    Log.d(TAG, "Thread interrupted: abort remaining retries!");
+                    Log.d("xx3", "Thread interrupted: abort remaining retries!");
                     Thread.currentThread().interrupt();
                     return;
                 }
@@ -118,7 +118,7 @@ public final class ServerUtilities {
      */
     private static void post(String endpoint, Map<String, String> params)
             throws IOException {
-
+        Log.d("xxxF","vao post");
         URL url;
         try {
             url = new URL(endpoint);
@@ -129,6 +129,7 @@ public final class ServerUtilities {
         Iterator<Entry<String, String>> iterator = params.entrySet().iterator();
         // constructs the POST body using the parameters
         while (iterator.hasNext()) {
+            Log.d("xxxF","vao post"+params);
             Entry<String, String> param = iterator.next();
             bodyBuilder.append(param.getKey()).append('=')
                     .append(param.getValue());
@@ -137,11 +138,11 @@ public final class ServerUtilities {
             }
         }
         String body = bodyBuilder.toString();
-        Log.v(TAG, "Posting '" + body + "' to " + url);
+        Log.v("xxxBody", "Posting '" + body + "' to " + url);
         byte[] bytes = body.getBytes();
         HttpURLConnection conn = null;
         try {
-            Log.e("URL", "> " + url);
+            Log.e("xxURL", "> " + url);
             conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setUseCaches(false);
@@ -155,10 +156,14 @@ public final class ServerUtilities {
             out.close();
             // handle the response
             int status = conn.getResponseCode();
+            Log.d("xxxStatus",status+"");
             if (status != 200) {
                 throw new IOException("Post failed with error code " + status);
             }
-        } finally {
+
+        }  catch(Exception e){
+                e.printStackTrace();
+        }finally {
             if (conn != null) {
                 conn.disconnect();
             }

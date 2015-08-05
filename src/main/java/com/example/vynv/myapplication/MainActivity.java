@@ -71,6 +71,7 @@ public class MainActivity extends Activity {
         // Get GCM registration id
         final String regId = GCMRegistrar.getRegistrationId(this);
         Log.d("xxx1",regId+"");
+        lblMessage.append(regId );
         // Check if regid already presents
         if (regId.equals("")) {
             // Registration is not present, register now with GCM
@@ -80,7 +81,7 @@ public class MainActivity extends Activity {
             if (GCMRegistrar.isRegisteredOnServer(this)) {
                 // Skips registration.
                 Toast.makeText(getApplicationContext(), "Already registered with GCM", Toast.LENGTH_LONG).show();
-            } else {
+//            } else {
                 // Try to register again, but not in the UI thread.
                 // It's also necessary to cancel the thread onDestroy(),
                 // hence the use of AsyncTask instead of a raw thread.
@@ -89,6 +90,7 @@ public class MainActivity extends Activity {
 
                     @Override
                     protected Void doInBackground(Void... params) {
+                        Log.d("xxx11",regId+"");
                         // Register on our server
                         // On server creates a new user
                         ServerUtilities.register(context, name, email, regId);
@@ -96,7 +98,7 @@ public class MainActivity extends Activity {
                     }
 
                     @Override
-                    protected void onPostExecute(Void result) {
+                     protected void onPostExecute(Void result) {
                         mRegisterTask = null;
                     }
 
@@ -123,8 +125,8 @@ public class MainActivity extends Activity {
              * */
 
             // Showing received message
-            lblMessage.append(newMessage + "\n");
-            Toast.makeText(getApplicationContext(), "New Message: " + newMessage, Toast.LENGTH_LONG).show();
+           lblMessage.append(newMessage + "\n");
+            Log.d("xxxBr", "New Message: " + newMessage);
 
             // Releasing wake lock
             WakeLocker.release();
@@ -140,7 +142,7 @@ public class MainActivity extends Activity {
             unregisterReceiver(mHandleMessageReceiver);
             GCMRegistrar.onDestroy(this);
         } catch (Exception e) {
-            Log.e("Receiver Error", "> " + e.getMessage());
+            Log.e("xxxError", "> " + e.getMessage());
         }
         super.onDestroy();
     }

@@ -10,10 +10,10 @@ import android.content.Intent;
 public final class CommonUtilities {
 
     // give your server registration url here
-   public static final String SERVER_URL = "http://172.16.40.195/gcm_server_php/register.php";
+   public static final String SERVER_URL = "http://172.16.40.100/gcm/register.php";
 
     // Google project id
-   public static final String SENDER_ID = "92287935510";
+   public static final String SENDER_ID = "608914210304";
     /**
      * Tag used on log messages.
      */
