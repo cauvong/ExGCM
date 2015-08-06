@@ -1,9 +1,5 @@
 package com.example.vynv.myapplication;
 
-/**
- * Copyright © 2015 AsianTech inc.
- * Created by vynv on 7/31/15.
- */
 import android.content.Context;
 import android.os.PowerManager;
 

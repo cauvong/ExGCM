@@ -1,28 +1,26 @@
 package com.example.vynv.myapplication;
 
-/**
- * Copyright © 2015 AsianTech inc.
- * Created by vynv on 7/31/15.
- */
 import android.content.Context;
 import android.content.Intent;
 
 public final class CommonUtilities {
-
-    // give your server registration url here
-   public static final String SERVER_URL = "http://172.16.40.100/gcm/register.php";
+	
+	// give your server registration url here
+    static final String SERVER_URL = "http://172.16.40.127/gcm_server_php/register.php";
+    static final String SERVER_URL_AGE = "http://172.16.40.127/gcm_server_php/send_message_to_sv.php";
 
     // Google project id
-   public static final String SENDER_ID = "608914210304";
+    static final String SENDER_ID = "727077861981";
+
     /**
      * Tag used on log messages.
      */
-   public static final String TAG = "AndroidHive GCM";
+    static final String TAG = "AndroidHive GCM";
 
-   public static final String DISPLAY_MESSAGE_ACTION =
+    static final String DISPLAY_MESSAGE_ACTION =
             "com.androidhive.pushnotifications.DISPLAY_MESSAGE";
 
-   public static final String EXTRA_MESSAGE = "message";
+    static final String EXTRA_MESSAGE = "message";
 
     /**
      * Notifies UI to display a message.

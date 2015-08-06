@@ -1,10 +1,5 @@
 package com.example.vynv.myapplication;
 
-/**
- * Copyright © 2015 AsianTech inc.
- * Created by vynv on 7/31/15.
- */
-
 import android.content.Context;
 import android.util.Log;
 
@@ -27,7 +22,7 @@ import static com.example.vynv.myapplication.CommonUtilities.displayMessage;
 
 
 public final class ServerUtilities {
-    private static final int MAX_ATTEMPTS = 5;
+	private static final int MAX_ATTEMPTS = 5;
     private static final int BACKOFF_MILLI_SECONDS = 2000;
     private static final Random random = new Random();
 
@@ -35,20 +30,28 @@ public final class ServerUtilities {
      * Register this account/device pair within the server.
      *
      */
+    static void sendMessage(final Context context, String regId, String mesage){
+        Log.i(TAG, "registering device (regId = " + regId + ")" +mesage);
+        String serverUrl = SERVER_URL;
+        Map<String, String> params=new HashMap<String,String>();
+        params.put("regId",regId);
+        params.put("message",mesage);
+
+    }
     static void register(final Context context, String name, String email, final String regId) {
-        Log.i("xxx2", "registering device (regId = " + regId + ")" +name+"---"+email);
+        Log.i(TAG, "registering device (regId = " + regId + ")");
         String serverUrl = SERVER_URL;
         Map<String, String> params = new HashMap<String, String>();
         params.put("regId", regId);
         params.put("name", name);
         params.put("email", email);
-
+        
         long backoff = BACKOFF_MILLI_SECONDS + random.nextInt(1000);
         // Once GCM returns a registration id, we need to register on our server
         // As the server might be down, we will retry it a couple
         // times.
         for (int i = 1; i <= MAX_ATTEMPTS; i++) {
-            Log.d("xxxS", "Attempt #" + i + " to register");
+            Log.d(TAG, "Attempt #" + i + " to register");
             try {
                 displayMessage(context, context.getString(
                         R.string.server_registering, i, MAX_ATTEMPTS));
@@ -61,16 +64,16 @@ public final class ServerUtilities {
                 // Here we are simplifying and retrying on any error; in a real
                 // application, it should retry only on unrecoverable errors
                 // (like HTTP error code 503).
-                Log.e("xxxS2", "Failed to register on attempt " + i + ":" + e);
+                Log.e(TAG, "Failed to register on attempt " + i + ":" + e);
                 if (i == MAX_ATTEMPTS) {
                     break;
                 }
                 try {
-                    Log.d("xx#", "Sleeping for " + backoff + " ms before retry");
+                    Log.d(TAG, "Sleeping for " + backoff + " ms before retry");
                     Thread.sleep(backoff);
                 } catch (InterruptedException e1) {
                     // Activity finished before we complete - exit.
-                    Log.d("xx3", "Thread interrupted: abort remaining retries!");
+                    Log.d(TAG, "Thread interrupted: abort remaining retries!");
                     Thread.currentThread().interrupt();
                     return;
                 }
@@ -117,8 +120,8 @@ public final class ServerUtilities {
      * @throws java.io.IOException propagated from POST.
      */
     private static void post(String endpoint, Map<String, String> params)
-            throws IOException {
-        Log.d("xxxF","vao post");
+            throws IOException {   	
+        
         URL url;
         try {
             url = new URL(endpoint);
@@ -129,7 +132,6 @@ public final class ServerUtilities {
         Iterator<Entry<String, String>> iterator = params.entrySet().iterator();
         // constructs the POST body using the parameters
         while (iterator.hasNext()) {
-            Log.d("xxxF","vao post"+params);
             Entry<String, String> param = iterator.next();
             bodyBuilder.append(param.getKey()).append('=')
                     .append(param.getValue());
@@ -138,11 +140,11 @@ public final class ServerUtilities {
             }
         }
         String body = bodyBuilder.toString();
-        Log.v("xxxBody", "Posting '" + body + "' to " + url);
+        Log.v(TAG, "Posting '" + body + "' to " + url);
         byte[] bytes = body.getBytes();
         HttpURLConnection conn = null;
         try {
-            Log.e("xxURL", "> " + url);
+        	Log.e("URL", "> " + url);
             conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setUseCaches(false);
@@ -156,17 +158,13 @@ public final class ServerUtilities {
             out.close();
             // handle the response
             int status = conn.getResponseCode();
-            Log.d("xxxStatus",status+"");
             if (status != 200) {
-                throw new IOException("Post failed with error code " + status);
+              throw new IOException("Post failed with error code " + status);
             }
-
-        }  catch(Exception e){
-                e.printStackTrace();
-        }finally {
+        } finally {
             if (conn != null) {
                 conn.disconnect();
             }
         }
-    }
+      }
 }
