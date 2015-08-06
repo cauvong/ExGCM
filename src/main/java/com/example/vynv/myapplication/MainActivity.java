@@ -8,6 +8,9 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,15 +18,18 @@ import com.google.android.gcm.GCMRegistrar;
 
 import static com.example.vynv.myapplication.CommonUtilities.DISPLAY_MESSAGE_ACTION;
 import static com.example.vynv.myapplication.CommonUtilities.EXTRA_MESSAGE;
+import static com.example.vynv.myapplication.CommonUtilities.EXTRA_MESSAGE_;
 import static com.example.vynv.myapplication.CommonUtilities.SENDER_ID;
 
 public class MainActivity extends Activity {
 	// label to display gcm messages
 	TextView lblMessage;
-	
+	EditText edMessage;
+    Button btnSend;
 	// Asyntask
 	AsyncTask<Void, Void, Void> mRegisterTask;
-	
+	AsyncTask<Void, Void, Void> mSendMessageTask;
+
 	// Alert dialog manager
 	AlertDialogManager alert = new AlertDialogManager();
 	
@@ -37,9 +43,30 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+        final String regId_ = GCMRegistrar.getRegistrationId(this);
+		edMessage=(EditText)findViewById(R.id.edMessage);
+        btnSend=(Button)findViewById(R.id.btnSend);
 		cd = new ConnectionDetector(getApplicationContext());
+        final String deviceId_= "android-device-"+android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSendMessageTask=new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        ServerUtilities.sendMessage(getApplicationContext(), regId_, edMessage.getText().toString(), deviceId_);
+                        return null;
+                    }
 
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        mSendMessageTask=null;
+                    }
+                };
+                mSendMessageTask.execute(null,null,null);
+                edMessage.setText("");
+            }
+        });
 		// Check if Internet present
 		if (!cd.isConnectingToInternet()) {
 			// Internet Connection is not present
@@ -70,8 +97,9 @@ public class MainActivity extends Activity {
 		
 		// Get GCM registration id
 		final String regId = GCMRegistrar.getRegistrationId(this);
+        final String deviceId= "android-device-"+android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
 
-		// Check if regid already presents
+        // Check if regid already presents
 		if (regId.equals("")) {
 			// Registration is not present, register now with GCM			
 			GCMRegistrar.register(this, SENDER_ID);
@@ -86,12 +114,12 @@ public class MainActivity extends Activity {
 				// hence the use of AsyncTask instead of a raw thread.
 				final Context context = this;
 				mRegisterTask = new AsyncTask<Void, Void, Void>() {
-
 					@Override
 					protected Void doInBackground(Void... params) {
 						// Register on our server
 						// On server creates a new user
-						ServerUtilities.register(context, name, email, regId);
+						ServerUtilities.register(context, name, email, regId,deviceId);
+                        Log.d("xxx",""+ android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID));
 						return null;
 					}
 
@@ -112,23 +140,29 @@ public class MainActivity extends Activity {
 	private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-            Log.d("xxxReceiver",intent.getExtras().getString(EXTRA_MESSAGE));
-			String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
-			// Waking up mobile if it is sleeping
-			WakeLocker.acquire(getApplicationContext());
-			
-			/**
-			 * Take appropriate action on this message
-			 * depending upon your app requirement
-			 * For now i am just displaying it on the screen
-			 * */
-			
-			// Showing received message
-			lblMessage.append(newMessage + "\n");			
-			Toast.makeText(getApplicationContext(), "New Message: " + newMessage, Toast.LENGTH_LONG).show();
-			
-			// Releasing wake lock
-			WakeLocker.release();
+            if(intent.getExtras().getString(EXTRA_MESSAGE)==null || intent.getExtras().getString(EXTRA_MESSAGE_)==null){
+                return;
+            }
+            else {
+                Log.d("xxxReceiver", intent.getExtras().getString(EXTRA_MESSAGE));
+                Log.d("xxxReceiver_____", intent.getExtras().getString(EXTRA_MESSAGE_));
+                String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
+                // Waking up mobile if it is sleeping
+                WakeLocker.acquire(getApplicationContext());
+
+                /**
+                 * Take appropriate action on this message
+                 * depending upon your app requirement
+                 * For now i am just displaying it on the screen
+                 * */
+
+                // Showing received message
+                lblMessage.append(newMessage + "\n");
+                Toast.makeText(getApplicationContext(), "New Message: " + newMessage, Toast.LENGTH_LONG).show();
+
+                // Releasing wake lock
+                WakeLocker.release();
+            }
 		}
 	};
 	

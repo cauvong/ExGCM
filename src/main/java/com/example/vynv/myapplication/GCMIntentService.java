@@ -25,10 +25,11 @@ public class GCMIntentService extends GCMBaseIntentService {
      **/
     @Override
     protected void onRegistered(Context context, String registrationId) {
+       String strDeviceId= android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
         Log.i(TAG, "Device registered: regId = " + registrationId);
         displayMessage(context, "Your device registred with GCM");
         Log.d("NAME", MainActivity.name);
-        ServerUtilities.register(context, MainActivity.name, MainActivity.email, registrationId);
+        ServerUtilities.register(context, MainActivity.name, MainActivity.email, registrationId,strDeviceId);
     }
 
     /**
@@ -49,7 +50,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     protected void onMessage(Context context, Intent intent) {
         Log.i(TAG, "Received message");
         String message = intent.getExtras().getString("price");
-        
+        Log.d("xxxOnMessage",""+message+ intent.getExtras().getString("regId_"));
         displayMessage(context, message);
         // notifies user
         generateNotification(context, message);

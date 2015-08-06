@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 
 import static com.example.vynv.myapplication.CommonUtilities.SERVER_URL;
+import static com.example.vynv.myapplication.CommonUtilities.SERVER_URL_AGE;
 import static com.example.vynv.myapplication.CommonUtilities.TAG;
 import static com.example.vynv.myapplication.CommonUtilities.displayMessage;
 
@@ -30,22 +31,31 @@ public final class ServerUtilities {
      * Register this account/device pair within the server.
      *
      */
-    static void sendMessage(final Context context, String regId, String mesage){
-        Log.i(TAG, "registering device (regId = " + regId + ")" +mesage);
-        String serverUrl = SERVER_URL;
-        Map<String, String> params=new HashMap<String,String>();
-        params.put("regId",regId);
+    static void sendMessage(final Context context,final String regId, String mesage,String deviceId){
+        String serverUrl = SERVER_URL_AGE;
+        Map<String, String> params=new HashMap<String, String>();
+        params.put("regId","APA91bEsVpVEACoGHVP6kK6hhG4UpjMP_wmalqImsXfkdaTMM0KwU_LzvKIM7L6vTtDYIlsklzj9G60KVKxbdjUK5wsMj5vANMEvZ6ntzhne4gluQXewJ-QxFYHxPDjzSXnYQ4pqy6ki");
         params.put("message",mesage);
+        params.put("deviceId","android-device-a54d6eb2165eee03");
+        try{
+            post(serverUrl, params);
+            String message = context.getString(R.string.server_registered);
+            CommonUtilities.displayMessage(context, message);
+            Log.i(TAG, "Send message (regId = " + regId + ")" +mesage+"---"+deviceId);
 
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
     }
-    static void register(final Context context, String name, String email, final String regId) {
+    static void register(final Context context, String name, String email, final String regId,final String deviceId) {
         Log.i(TAG, "registering device (regId = " + regId + ")");
         String serverUrl = SERVER_URL;
         Map<String, String> params = new HashMap<String, String>();
         params.put("regId", regId);
         params.put("name", name);
         params.put("email", email);
-        
+        params.put("deviceId",deviceId);
         long backoff = BACKOFF_MILLI_SECONDS + random.nextInt(1000);
         // Once GCM returns a registration id, we need to register on our server
         // As the server might be down, we will retry it a couple
@@ -58,7 +68,6 @@ public final class ServerUtilities {
                 post(serverUrl, params);
                 GCMRegistrar.setRegisteredOnServer(context, true);
                 String message = context.getString(R.string.server_registered);
-                CommonUtilities.displayMessage(context, message);
                 return;
             } catch (IOException e) {
                 // Here we are simplifying and retrying on any error; in a real

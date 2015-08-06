@@ -21,6 +21,7 @@ public final class CommonUtilities {
             "com.androidhive.pushnotifications.DISPLAY_MESSAGE";
 
     static final String EXTRA_MESSAGE = "message";
+    static final String EXTRA_MESSAGE_ = "regId_";
 
     /**
      * Notifies UI to display a message.
