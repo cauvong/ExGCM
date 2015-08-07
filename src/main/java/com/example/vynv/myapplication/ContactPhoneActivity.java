@@ -1,44 +1,45 @@
 package com.example.vynv.myapplication;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
+
+import com.example.vynv.myapplication.adapter.ContactPhoneAdapter;
+import com.example.vynv.myapplication.objects.ContactPhone;
+
+import java.util.ArrayList;
 
 
-public class ContactPhoneActivity extends ListActivity {
-
-    @Override
-    public long getSelectedItemId() {
-        return super.getSelectedItemId();
-    }
-
-    @Override
-    public int getSelectedItemPosition() {
-        return super.getSelectedItemPosition();
-    }
+public class ContactPhoneActivity extends Activity {
 
     ListView listView;
     Cursor cursor;
-
+    ArrayList<ContactPhone> contactPhones;
+    ContactPhoneAdapter mAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_phone);
 
-        cursor=getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,null,null,null);
+        listView = (ListView) findViewById(R.id.lsContact);
+
+        cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         startManagingCursor(cursor);
-
-        String[] from ={ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone._ID};
-
-        int[] to={android.R.id.text1,android.R.id.text2};
-
-        SimpleCursorAdapter listContact=new SimpleCursorAdapter(this,android.R.layout.simple_expandable_list_item_2,cursor,from,to);
-        setListAdapter(listContact);
-        listView=getListView();
-        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-
+        String[] from = {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone._ID};
+        if(cursor.moveToFirst()) {
+            contactPhones = new ArrayList<>();
+            while(cursor.moveToNext()) {
+                ContactPhone contactPhone = new ContactPhone();
+                contactPhone.setPhoneID_(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID)));
+                contactPhone.setPhoneNumber(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                contactPhone.setPhoneNamePeople(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+                contactPhones.add(contactPhone);
+            }
+        }
+       mAdapter=new ContactPhoneAdapter(getApplicationContext(),contactPhones);
+        listView.setAdapter(mAdapter);
+      mAdapter.notifyDataSetChanged();
     }
 }
