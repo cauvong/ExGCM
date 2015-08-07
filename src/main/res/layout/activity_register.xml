@@ -27,8 +27,21 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dip"
-        android:layout_marginBottom="20dip"/>
+        android:layout_marginBottom="20dip"
+        android:inputType="textEmailAddress" />
 
+    <TextView android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="My Phone Number:"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"/>
+
+    <EditText android:id="@+id/txtPhoneNumber"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dip"
+        android:layout_marginBottom="20dip"
+        android:inputType="phone" />
     <Button android:id="@+id/btnRegister"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

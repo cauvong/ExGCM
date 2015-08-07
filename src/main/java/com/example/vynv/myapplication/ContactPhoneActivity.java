@@ -1,9 +1,12 @@
 package com.example.vynv.myapplication;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.vynv.myapplication.adapter.ContactPhoneAdapter;
@@ -22,9 +25,7 @@ public class ContactPhoneActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_phone);
-
         listView = (ListView) findViewById(R.id.lsContact);
-
         cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         startManagingCursor(cursor);
         String[] from = {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone._ID};
@@ -41,5 +42,16 @@ public class ContactPhoneActivity extends Activity {
        mAdapter=new ContactPhoneAdapter(getApplicationContext(),contactPhones);
         listView.setAdapter(mAdapter);
       mAdapter.notifyDataSetChanged();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent=new Intent(getApplicationContext(),MainActivity.class);
+                intent.putExtra("number_phone",contactPhones.get(position).getPhoneNumber());
+                startActivity(intent);
+                finish();
+            }
+        });
     }
+
 }

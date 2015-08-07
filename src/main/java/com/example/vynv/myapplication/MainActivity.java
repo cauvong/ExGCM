@@ -37,12 +37,19 @@ public class MainActivity extends Activity {
 	ConnectionDetector cd;
 	
 	public static String name;
+	public  String numberPhone;
 	public static String email;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+        // Getting name, email from intent
+        Intent i = getIntent();
+        numberPhone=i.getStringExtra("number_phone");
+        name = i.getStringExtra("name");
+        email = i.getStringExtra("email");
+        Log.d("xxx",""+numberPhone);
         final String regId_ = GCMRegistrar.getRegistrationId(this);
 		edMessage=(EditText)findViewById(R.id.edMessage);
         btnSend=(Button)findViewById(R.id.btnSend);
@@ -77,12 +84,7 @@ public class MainActivity extends Activity {
 			return;
 		}
 		
-		// Getting name, email from intent
-		Intent i = getIntent();
-		
-		name = i.getStringExtra("name");
-		email = i.getStringExtra("email");		
-		
+
 		// Make sure the device has the proper dependencies.
 		GCMRegistrar.checkDevice(this);
 
