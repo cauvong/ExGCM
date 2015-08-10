@@ -50,7 +50,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     protected void onMessage(Context context, Intent intent) {
         Log.i(TAG, "Received message");
         String message = intent.getExtras().getString("price");
-        Log.d("xxxOnMessage",""+message+ intent.getExtras().getString("regId_"));
+        Log.d("xxxOnMessage",""+message);
         displayMessage(context, message);
         // notifies user
         generateNotification(context, message);

@@ -129,7 +129,6 @@ public class MainActivity extends Activity {
 					protected void onPostExecute(Void result) {
 						mRegisterTask = null;
 					}
-
 				};
 				mRegisterTask.execute(null, null, null);
 			}
@@ -142,7 +141,8 @@ public class MainActivity extends Activity {
 	private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-            if(intent.getExtras().getString(EXTRA_MESSAGE)==null || intent.getExtras().getString(EXTRA_MESSAGE_)==null){
+            if(intent.getExtras().getString(EXTRA_MESSAGE)==null){
+               Log.d("xxx","---------");
                 return;
             }
             else {

@@ -67,28 +67,27 @@ public class RegisterActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				// Read EditText dat
-                Intent i = new Intent(getApplicationContext(), ContactPhoneActivity.class);
-                startActivity(i);
-                finish();
-//				String name = txtName.getText().toString();
-//				String email = txtEmail.getText().toString();
-//
-//				// Check if user filled the form
-//				if(name.trim().length() > 0 && email.trim().length() > 0){
-//					// Launch Main Activity
-//					Intent i = new Intent(getApplicationContext(), MainActivity.class);
-//
-//					// Registering user on our server
-//					// Sending registraiton details to MainActivity
-//					i.putExtra("name", name);
-//					i.putExtra("email", email);
-//					startActivity(i);
-//					finish();
-//				}else{
-//					// user doen't filled that data
-//					// ask him to fill the form
-//					alert.showAlertDialog(RegisterActivity.this, "Registration Error!", "Please enter your details", false);
-//				}
+//                Intent i = new Intent(getApplicationContext(), ContactPhoneActivity.class);
+//                startActivity(i);
+//                finish();
+				String name = txtName.getText().toString();
+				String email = txtEmail.getText().toString();
+				// Check if user filled the form
+				if(name.trim().length() > 0 && email.trim().length() > 0){
+					// Launch Main Activity
+					Intent i = new Intent(getApplicationContext(), MainActivity.class);
+
+					// Registering user on our server
+					// Sending registraiton details to MainActivity
+					i.putExtra("name", name);
+					i.putExtra("email", email);
+					startActivity(i);
+					finish();
+				}else{
+					// user doen't filled that data
+					// ask him to fill the form
+					alert.showAlertDialog(RegisterActivity.this, "Registration Error!", "Please enter your details", false);
+				}
 			}
 		});
 	}
