@@ -25,4 +25,6 @@ dependencies {
     compile files('libs/gcm.jar')
     compile 'com.google.android.gms:play-services-fitness:7.5.0'
     compile 'com.google.android.gms:play-services-wearable:7.5.0'
+    compile 'com.google.android.gms:play-services-plus:7.5.0'
+    compile 'com.google.android.gms:play-services:7.5.0'
 }
